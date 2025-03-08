@@ -115,8 +115,8 @@ def synthesize_speech():
     data = request.get_json()
     text = data.get("text", "Hello from Azure TTS!")
     try:
-        # Set working directory to app.root_path so that Node can locate azure-speech.js
-        check_output(["node", "azure-speech.js", text], cwd=app.root_path)
+        # Call the Azure Speech script using azure-speech.js
+        check_output(["node", "frontend/azure-speech.js", text])
         return jsonify({
             "status": "success",
             "message": "Speech synthesized",

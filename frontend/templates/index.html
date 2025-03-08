@@ -235,6 +235,11 @@
                 Switch to QA Mode
               </button>
             </div>
+            <div>
+              <button id="toggleVoiceCommand" class="btn btn-outline-secondary" style="width: 100%;">
+                Voice Command Off
+              </button>
+            </div>
             <!-- New: Speed selection dropdown -->
             <!-- <div class="form-group mt-2">
               <label for="speedSelect">Select Speed</label>
@@ -322,6 +327,7 @@
       // isSpeechModeEnabled is now used to toggle Azure TTS playback via our endpoint
       var isSpeechModeEnabled = false;
       var flagFilterActive = false;
+      var isVoiceCommandEnabled = false;
 
       // Replace native speech synthesis with Azure TTS. This function calls our endpoint that uses azure-speech.js.
       function speakEmail() {
@@ -528,14 +534,9 @@
 
       // Toggle recording for feedback
       function toggleRecording() {
-        if (isRecording) {
-          recognition.stop();
-          $("#startRecording").text("Share Feedback");
-        } else {
-          recognition.start();
-          $("#startRecording").text("Stop Listening");
-        }
         isRecording = !isRecording;
+        $("#startRecording").text(isRecording ? "Stop Listening" : "Share Feedback");
+        updateRecognitionState();
       }
 
       // Initialize speech recognition
@@ -549,15 +550,21 @@
         recognition.interimResults = false;
         recognition.lang = "en-US";
         recognition.onresult = function(event) {
-          var transcript = event.results[event.results.length - 1][0].transcript;
-          $("#email_feedback").val($("#email_feedback").val() + " " + transcript);
-          autoSave();
+          var transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
+          if (transcript.includes("larry next record")) {
+            loadRecord(currentIndex + 1);
+          } else if (transcript.includes("larry share feedback")) {
+            toggleRecording();
+          } else if (isRecording) {
+            $("#email_feedback").val($("#email_feedback").val() + " " + transcript);
+            autoSave();
+          }
         };
         recognition.onerror = function(event) {
           console.error("Speech recognition error", event);
         };
         recognition.onend = function() {
-          if (isRecording) {
+          if (isVoiceCommandEnabled || isRecording) {
             recognition.start();
           }
         };
@@ -602,6 +609,21 @@
         } else {
           $("#filterFlagged").removeClass("active");
           loadRecord(0);
+        }
+      }
+
+      function toggleVoiceCommand() {
+        isVoiceCommandEnabled = !isVoiceCommandEnabled;
+        $("#toggleVoiceCommand").text(isVoiceCommandEnabled ? "Voice Command On" : "Voice Command Off");
+        updateRecognitionState();
+      }
+
+      function updateRecognitionState() {
+        if ((!recognition) || (!("webkitSpeechRecognition" in window))) return;
+        if (isVoiceCommandEnabled || isRecording) {
+          recognition.start();
+        } else {
+          recognition.stop();
         }
       }
 
@@ -662,6 +684,7 @@
         $("#toggleFeedback").click(toggleFeedback);
         $("#toggleFlag").click(toggleFlag);
         $("#filterFlagged").click(toggleFlagFilter);
+        $("#toggleVoiceCommand").click(toggleVoiceCommand);
 
         initSpeechRecognition();
 
