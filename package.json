@@ -1,0 +1,13 @@
+{
+  "name": "email_codebase_cleaning_frontend",
+  "version": "1.0.0",
+  "description": "Frontend for email codebase cleaning",
+  "main": "azure-speech.js",
+  "scripts": {
+    "start": "node azure-speech.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.22.1"
+  }
+}
