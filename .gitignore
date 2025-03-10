@@ -27,3 +27,7 @@ node_modules/.package-lock.json
 emailQA_venv/
 output/speech.wav
 frontend/__pycache__/speech_synthesizer.cpython-39.pyc
+.stable archive/index copy.html
+.gitignore
+.stable archive/speech_synthesizer copy.py
+.gitignore
