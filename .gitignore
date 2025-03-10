@@ -31,3 +31,10 @@ frontend/__pycache__/speech_synthesizer.cpython-39.pyc
 .gitignore
 .stable archive/speech_synthesizer copy.py
 .gitignore
+output/5html_converted_content.json
+output/6email_feedback.json
+.gitignore
+.stable archive/all new features/main.py
+.gitignore
+.stable archive/all new features/index.html
+.stable archive/all new features/speech_synthesizer.py
