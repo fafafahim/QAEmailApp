@@ -170,16 +170,6 @@
         <div class="col-12 col-md-3 left-panel">
           <!-- Editing & Feedback Card -->
           <div class="card">
-            <div>
-              <button id="toggleSpeech" class="btn btn-outline-secondary" style="width: 100%;">
-                Speech Mode Off
-              </button>
-              <!-- New: Voice selection dropdown -->
-              <!-- <div class="form-group mt-2">
-                <label for="voiceSelect">Select Voice</label>
-                <select id="voiceSelect" class="form-control"></select>
-              </div> -->
-            </div>
             <div class="form-group">
               <label for="email_subject_extract" id="subject_label">Email Subject</label>
               <textarea
@@ -235,96 +225,143 @@
           </div>
           <div class="card">
             <div>
+              <!-- New Voice and Rate selection inputs -->
+              <div class="form-group">
+                <label for="voiceSelectInput">Voice</label>
+                <select id="voiceSelectInput" class="form-control">
+                  <option value="en-US-AriaNeural">Aria</option>
+                  <option value="en-US-ChristopherNeural">Christopher</option>
+
+                  <option value="en-US-JennyNeural">Jenny</option>
+                  <option value="en-US-GuyNeural">Guy</option>
+                  <option value="en-US-DavisNeural">Davis</option>
+                  <option value="en-US-JaneNeural">Jane</option>
+                  <option value="en-US-AndrewNeural">Andrew</option>
+                  <option value="en-GB-SoniaNeural">Sonia</option>
+                  <option value="en-GB-RyanNeural">Ryan</option>
+                  <option value="en-AU-NatashaNeural">Natasha</option>
+                  <option value="es-ES-ElviraNeural">Elvira</option>
+                  <option value="fr-FR-DeniseNeural">Denise</option>
+                  <!-- Add additional options as needed -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="rateSlider">Speech Rate: <span id="rateValue">25%</span></label>
+                <input type="range" id="rateSlider" class="form-control-range" min="0" max="200" value="25" />
+              </div>
+              <button id="toggleSpeech" class="btn btn-outline-secondary" style="width: 100%;">
+                Speech Mode Off
+              </button>
+              <div>
+                <button id="toggleVoiceCommand" class="btn btn-outline-secondary" style="width: 100%;">
+                  Voice Command Off
+                </button>
+              </div>
+            </div>
+            <div>
               <button id="filterFlagged" class="btn btn-outline-secondary" style="width: 100%;">
                 Filter Flagged
               </button>
             </div>
             <div>
               <button id="toggleMode" class="btn btn-outline-secondary" style="width: 100%;">
-                Switch to QA Mode
+                Switch to Post-Feedback Emails
               </button>
             </div>
-            <div>
-              <button id="toggleVoiceCommand" class="btn btn-outline-secondary" style="width: 100%;">
-                Voice Command Off
-              </button>
+
+          </div>
+
+          <!-- New: Mobile-only toggle button (targets both extra info containers) -->
+          <div class="d-md-none text-center mb-2">
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target=".more-info" aria-expanded="false" aria-controls="more-info"  style="width: 100%;">
+              More info
+            </button>
+          </div>
+
+          <!-- Wrap extra info cards in a collapsible container -->
+          <div class="more-info collapse d-md-block">
+            <div class="card">
+              <strong>Email Subject Rationale:</strong>
+              <span id="display_email_subject"></span>
             </div>
-          </div>
-          <div class="card">
-            <strong>Email Subject Rationale:</strong>
-            <span id="display_email_subject"></span>
-          </div>
-          <div class="card">
-            <strong>Most Relevant Topic:</strong>
-            <span id="display_most_relevant_topic"></span>
-          </div>
-          <div class="card">
-            <strong>Researching Topic:</strong>
-            <span id="display_researching_topic"></span>
-          </div>
-          <div class="card">
-            <strong>Relevant Pain Point:</strong>
-            <span id="display_relevant_painpoint"></span>
+            <div class="card">
+              <strong>Most Relevant Topic:</strong>
+              <span id="display_most_relevant_topic"></span>
+            </div>
+            <div class="card">
+              <strong>Researching Topic:</strong>
+              <span id="display_researching_topic"></span>
+            </div>
+            <div class="card">
+              <strong>Relevant Pain Point:</strong>
+              <span id="display_relevant_painpoint"></span>
+            </div>
           </div>
         </div>
         <!-- Right Panel: Prospect and Company Info -->
         <div class="col-12 col-md-9 right-panel">
-          <div class="card">
-            <div id="prospect_info_container"></div>
-          </div>
-          <div class="card">
-            <h5 id="contact_fullName" class="mb-1"></h5>
-            <p id="contact_title" class="mb-1"></p>
-            <p id="contact_company" class="mb-1"></p>
-            <div id="socialLinks" class="d-flex flex-wrap mt-2"></div>
-          </div>
-          <div class="card">
-            <h5>Company Background</h5>
-            <div id="company_background_container"></div>
-          </div>
-          <div class="card">
-            <h5>Engagements Combined</h5>
-            <div id="engagements_combined_container"></div>
-          </div>
-          <div class="card">
-            <h5>Roles and Responsibilities</h5>
-            <div id="roles_and_responsibilities_container"></div>
-          </div>
-          <div class="card">
-            <h5>Background</h5>
-          <div id="background_container"></div>
-          </div>
-          <!-- Updated JSON File Upload/Download Section with Reset Button -->
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Manage Data</h5>
-              <div class="mb-2">
-                <form id="uploadMainForm" enctype="multipart/form-data" method="POST" action="/upload_main">
-                  <input type="file" id="mainFile" name="file" accept=".json" class="form-control-file" />
-                  <button type="submit" class="btn btn-outline-secondary btn-sm mt-2">Upload Initial Emails</button>
-                </form>
-              </div>
-              <div class="mb-2">
-                <form id="uploadFeedbackForm" enctype="multipart/form-data" method="POST" action="/upload_feedback">
-                  <input type="file" id="feedbackFile" name="file" accept=".json" class="form-control-file"/>
-                  <button type="submit" class="btn btn-outline-secondary btn-sm mt-2">Upload Post-Feedback View Emails</button>
-                </form>
-              </div>
-              <div class="mb-2">
-                <a href="/download_main" class="btn btn-outline-secondary btn-sm" download>Download Reviewed Initial Emails</a>
-              </div>
-              <div class="mb-2">
-                <a href="/download_feedback" class="btn btn-outline-secondary btn-sm" download>Download Post-Feedback Reviewed Emails</a>
-              </div>
-              <!-- New: Reset All Files Button -->
-              <div class="mb-2">
-                <form method="POST" action="/reset_files">
-                  <button type="submit" class="btn btn-outline-secondary btn-sm">Reset All Files</button>
-                </form>
-              </div>
+          <div class="more-info collapse d-md-block">
+            <div class="card">
+              <div id="prospect_info_container"></div>
             </div>
+            <div class="card">
+              <h5 id="contact_fullName" class="mb-1"></h5>
+              <p id="contact_title" class="mb-1"></p>
+              <p id="contact_company" class="mb-1"></p>
+              <div id="socialLinks" class="d-flex flex-wrap mt-2"></div>
+            </div>
+            <div class="card">
+              <h5>Company Background</h5>
+              <div id="company_background_container"></div>
+            </div>
+            <div class="card">
+              <h5>Engagements Combined</h5>
+              <div id="engagements_combined_container"></div>
+            </div>
+            <div class="card">
+              <h5>Roles and Responsibilities</h5>
+              <div id="roles_and_responsibilities_container"></div>
+            </div>
+            <div class="card">
+              <h5>Background</h5>
+            <div id="background_container"></div>
+            </div>
+            <!-- Updated JSON File Upload/Download Section with Reset Button -->
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Upload Data</h5>
+                <div class="mb-2">
+                  <form id="uploadMainForm" enctype="multipart/form-data" method="POST" action="/upload_main">
+                    <input type="file" id="mainFile" name="file" accept=".json" class="form-control-file" />
+                    <button type="submit" class="btn btn-outline-secondary btn-sm mt-2">Upload Initial Emails</button>
+                  </form>
+                </div>
+                <div class="mb-2">
+                  <form id="uploadFeedbackForm" enctype="multipart/form-data" method="POST" action="/upload_feedback">
+                    <input type="file" id="feedbackFile" name="file" accept=".json" class="form-control-file"/>
+                    <button type="submit" class="btn btn-outline-secondary btn-sm mt-2">Upload Post-Feedback View Emails</button>
+                  </form>
+                </div>
+                
+                </div>
+              </div>
+              <div class="card">
+                <h5 class="card-title">Download Data</h5>
+                <div class="mb-2">
+                  <a href="/download_main" class="btn btn-outline-secondary btn-sm" download>Download Reviewed Initial Emails</a>
+                </div>
+                <div class="mb-2">
+                  <a href="/download_feedback" class="btn btn-outline-secondary btn-sm" download>Download Post-Feedback Reviewed Emails</a>
+                </div>
+                <!-- New: Reset All Files Button -->
+                <div class="mb-2">
+                  <form method="POST" action="/reset_files">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Reset All Files</button>
+                  </form>
+                </div>
+            </div>
+            <!-- End Updated Section -->
           </div>
-          <!-- End Updated Section -->
         </div>
       </div>
     </div>
