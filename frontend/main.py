@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, jsonify, send_from_directory,
 from dotenv import load_dotenv
 from subprocess import check_output, CalledProcessError
 import werkzeug
+import azure.cognitiveservices.speech as speechsdk 
 
 # Load environment variables from .env
 load_dotenv()
@@ -108,29 +109,18 @@ def update_feedback():
     save_feedback_records(records)
     return jsonify({"status": "success", "message": "QA feedback updated successfully."})
 
+from speech_synthesizer import synthesize
+
 @app.route("/synthesizeSpeech", methods=["POST"])
 def synthesize_speech():
     data = request.get_json()
     text = data.get("text", "Hello from Azure TTS!")
+    voice = data.get("voice", "en-US-ChristopherNeural")
+    rate = data.get("rate", "125%")
     try:
-        import azure.cognitiveservices.speech as speechsdk
-        # Use the correct variable names from .env
-        subscription_key = os.environ.get("AZURE_SPEECH_SUBSCRIPTION_KEY")
-        region = os.environ.get("AZURE_SPEECH_SERVICE_REGION")
-        if region:
-            region = region.strip()
-            
-        if not subscription_key or not region:
-            raise Exception("Missing Azure Speech credentials from environment variables.")
-            
-        speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
-        speech_config.speech_synthesis_voice_name = 'en-US-AvaMultilingualNeural'
         output_path = os.path.join("output", "speech.wav")
-        audio_config = speechsdk.audio.AudioOutputConfig(filename=output_path)
-        synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
-        
-        result = synthesizer.speak_text_async(text).get()
-        if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
+        result = synthesize(text, voice, rate, output_file=output_path)
+        if result.reason == getattr(speechsdk, "ResultReason").SynthesizingAudioCompleted:
             return jsonify({
                 "status": "success",
                 "message": "Speech synthesized",

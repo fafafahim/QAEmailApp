@@ -26,3 +26,4 @@ node_modules/.package-lock.json
 .env
 emailQA_venv/
 output/speech.wav
+frontend/__pycache__/speech_synthesizer.cpython-39.pyc

@@ -225,6 +225,29 @@
           </div>
           <div class="card">
             <div>
+              <!-- New Voice and Rate selection inputs -->
+              <div class="form-group">
+                <label for="voiceSelectInput">Voice</label>
+                <select id="voiceSelectInput" class="form-control">
+                  <option value="en-US-ChristopherNeural">Christopher</option>
+                  <option value="en-US-AriaNeural">Aria</option>
+                  <option value="en-US-JennyNeural">Jenny</option>
+                  <option value="en-US-GuyNeural">Guy</option>
+                  <option value="en-US-DavisNeural">Davis</option>
+                  <option value="en-US-JaneNeural">Jane</option>
+                  <option value="en-US-AndrewNeural">Andrew</option>
+                  <option value="en-GB-SoniaNeural">Sonia</option>
+                  <option value="en-GB-RyanNeural">Ryan</option>
+                  <option value="en-AU-NatashaNeural">Natasha</option>
+                  <option value="es-ES-ElviraNeural">Elvira</option>
+                  <option value="fr-FR-DeniseNeural">Denise</option>
+                  <!-- Add additional options as needed -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="rateSlider">Speech Rate: <span id="rateValue">125%</span></label>
+                <input type="range" id="rateSlider" class="form-control-range" min="50" max="200" value="125" />
+              </div>
               <button id="toggleSpeech" class="btn btn-outline-secondary" style="width: 100%;">
                 Speech Mode Off
               </button>
@@ -381,7 +404,11 @@
           url: "/synthesizeSpeech",
           method: "POST",
           contentType: "application/json",
-          data: JSON.stringify({ text: text }),
+          data: JSON.stringify({
+            text: text,
+            voice: $("#voiceSelectInput").val(),
+            rate: $("#rateSlider").val() + "%"
+          }),
           success: function(response) {
             if (response.status === "success") {
               if (window.currentAudio) {
@@ -764,6 +791,13 @@
         if (window.speechSynthesis.onvoiceschanged !== undefined) {
           window.speechSynthesis.onvoiceschanged = populateVoiceOptions;
         }
+
+        // Update the displayed slider value and print to console
+        $("#rateSlider").on("input", function(){
+          let rate = $(this).val() + "%";
+          $("#rateValue").text(rate);
+          console.log("Current speech rate:", rate);
+        });
       });
     </script>
   </body>
