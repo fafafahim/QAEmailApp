@@ -112,24 +112,30 @@ def update_feedback():
 def synthesize_speech():
     data = request.get_json()
     text = data.get("text", "Hello from Azure TTS!")
+    voice = data.get("voice", "en-US-AvaMultilingualNeural")
+    rate = data.get("rate", "125%")
     try:
         import azure.cognitiveservices.speech as speechsdk
-        # Use the correct variable names from .env
         subscription_key = os.environ.get("AZURE_SPEECH_SUBSCRIPTION_KEY")
         region = os.environ.get("AZURE_SPEECH_SERVICE_REGION")
-        if region:
-            region = region.strip()
-            
         if not subscription_key or not region:
             raise Exception("Missing Azure Speech credentials from environment variables.")
-            
+        region = region.strip()
         speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
-        speech_config.speech_synthesis_voice_name = 'en-US-AvaMultilingualNeural'
+        speech_config.speech_synthesis_voice_name = voice  # use requested voice
         output_path = os.path.join("output", "speech.wav")
         audio_config = speechsdk.audio.AudioOutputConfig(filename=output_path)
         synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
         
-        result = synthesizer.speak_text_async(text).get()
+        # Build SSML to include the prosody rate attribute.
+        ssml = f"""
+<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>
+  <voice name='{voice}'>
+    <prosody rate='{rate}'>{text}</prosody>
+  </voice>
+</speak>
+"""
+        result = synthesizer.speak_ssml_async(ssml).get()
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
             return jsonify({
                 "status": "success",

@@ -229,9 +229,9 @@
               <div class="form-group">
                 <label for="voiceSelectInput">Voice</label>
                 <select id="voiceSelectInput" class="form-control">
-                  <option value="en-US-AriaNeural">Aria</option>
-                  <option value="en-US-ChristopherNeural">Christopher</option>
 
+                  <option value="en-US-ChristopherNeural">Christopher</option>
+                  <option value="en-US-AriaNeural">Aria</option>
                   <option value="en-US-JennyNeural">Jenny</option>
                   <option value="en-US-GuyNeural">Guy</option>
                   <option value="en-US-DavisNeural">Davis</option>
@@ -246,7 +246,7 @@
                 </select>
               </div>
               <div class="form-group">
-                <label for="rateSlider">Speech Rate: <span id="rateValue">25%</span></label>
+                <label for="rateSlider">Speech Rate</label>
                 <input type="range" id="rateSlider" class="form-control-range" min="0" max="200" value="25" />
               </div>
               <button id="toggleSpeech" class="btn btn-outline-secondary" style="width: 100%;">
@@ -402,17 +402,18 @@
       }
 
       function speakEmailAzure(text) {
+        var voice = document.getElementById("voiceSelectInput").value; // use selected voice
+        var rate = document.getElementById("rateSlider").value + "%";    // use slider value
         $.ajax({
           url: "/synthesizeSpeech",
           method: "POST",
           contentType: "application/json",
-          data: JSON.stringify({ text: text }),
+          data: JSON.stringify({ text: text, voice: voice, rate: rate }),
           success: function(response) {
             if (response.status === "success") {
               if (window.currentAudio) {
                 window.currentAudio.pause();
               }
-              // Append a timestamp to bypass cache
               window.currentAudio = new Audio(response.audioUrl + "?t=" + Date.now());
               window.currentAudio.play();
             } else {
