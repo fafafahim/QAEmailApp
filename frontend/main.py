@@ -115,14 +115,32 @@ def synthesize_speech():
     data = request.get_json()
     text = data.get("text", "Hello from Azure TTS!")
     try:
-        # Call the Azure Speech script using azure-speech.js
-        check_output(["node", "frontend/azure-speech.js", text])
-        return jsonify({
-            "status": "success",
-            "message": "Speech synthesized",
-            "audioUrl": "/output/speech.wav"
-        })
-    except CalledProcessError as e:
+        import azure.cognitiveservices.speech as speechsdk
+        # Use the correct variable names from .env
+        subscription_key = os.environ.get("AZURE_SPEECH_SUBSCRIPTION_KEY")
+        region = os.environ.get("AZURE_SPEECH_SERVICE_REGION")
+        if region:
+            region = region.strip()
+            
+        if not subscription_key or not region:
+            raise Exception("Missing Azure Speech credentials from environment variables.")
+            
+        speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
+        speech_config.speech_synthesis_voice_name = 'en-US-AvaMultilingualNeural'
+        output_path = os.path.join("output", "speech.wav")
+        audio_config = speechsdk.audio.AudioOutputConfig(filename=output_path)
+        synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
+        
+        result = synthesizer.speak_text_async(text).get()
+        if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
+            return jsonify({
+                "status": "success",
+                "message": "Speech synthesized",
+                "audioUrl": "/output/speech.wav"
+            })
+        else:
+            return jsonify({"status": "error", "message": "Speech synthesis error"}), 500
+    except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == "__main__":
