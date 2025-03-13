@@ -573,14 +573,15 @@
       }
       
       // Load QA records from 6email_feedback.json
-      function loadQARecords() {
+      function loadQARecords(newIndex) {
         $.ajax({
           url: "/output/6email_feedback.json",
           method: "GET",
           dataType: "json",
           success: function(data) {
             feedbackRecords = data;
-            loadRecord(0);
+            if(newIndex >= feedbackRecords.length) newIndex = feedbackRecords.length - 1;
+            loadRecord(newIndex);
           },
           error: function(err) {
             console.error("Error loading QA feedback data", err);
@@ -697,12 +698,14 @@
       // Mode toggle handler
       $("#toggleMode").click(function() {
         qaModeEnabled = !qaModeEnabled;
+        var newIndex = currentIndex; // remember current record number
         if (qaModeEnabled) {
           $(this).text("Switch to Initial Emails");
-          loadQARecords();
+          loadQARecords(newIndex);
         } else {
           $(this).text("Switch to Post-Feedback Emails");
-          loadRecord(0);
+          if(newIndex >= mainRecords.length) newIndex = mainRecords.length - 1;
+          loadRecord(newIndex);
         }
       });
 
