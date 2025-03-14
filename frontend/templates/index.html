@@ -508,6 +508,9 @@
           updateRecord();
         }
 
+        // Save current record index to localStorage
+        localStorage.setItem("lastRecord", currentIndex);
+
         if (isSpeechModeEnabled) {
           // Use Azure TTS to read the email
           if (window.currentAudio) {
@@ -743,10 +746,13 @@
       });
 
       $(function() {
-        // Instead of replacing the entire container if no records exist,
-        // display a prompt in the status area.
+        // Load stored record index if available
         if (mainRecords.length > 0) {
-          loadRecord(0);
+          var storedIndex = parseInt(localStorage.getItem("lastRecord"));
+          if (isNaN(storedIndex) || storedIndex < 0 || storedIndex >= mainRecords.length) {
+              storedIndex = 0;
+          }
+          loadRecord(storedIndex);
         } else {
           $("#status").html("<p>No records found. Please upload a JSON file.</p>");
         }
