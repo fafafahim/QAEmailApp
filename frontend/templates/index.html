@@ -281,12 +281,12 @@
           <!-- Wrap extra info cards in a collapsible container -->
           <div class="more-info collapse d-md-block">
             <div class="card">
-              <strong>Email Subject Rationale:</strong>
-              <span id="display_email_subject"></span>
-            </div>
-            <div class="card">
               <strong>Most Relevant Topic:</strong>
               <span id="display_most_relevant_topic"></span>
+            </div>
+            <div class="card">
+              <strong>Initial Sentence:</strong>
+              <span id="display_initial_sentence"></span>
             </div>
             <div class="card">
               <strong>Researching Topic:</strong>
@@ -295,6 +295,14 @@
             <div class="card">
               <strong>Relevant Pain Point:</strong>
               <span id="display_relevant_painpoint"></span>
+            </div>
+            <div class="card">
+              <strong>Why Them:</strong>
+              <span id="display_why_them"></span>
+            </div>
+            <div class="card">
+              <strong>Email Subject Rationale:</strong>
+              <span id="display_email_subject"></span>
             </div>
           </div>
         </div>
@@ -497,6 +505,9 @@
         $("#display_researching_topic").text(record["researching_topic"] || "");
         $("#display_relevant_painpoint").text(record["relevant_painpoint"] || "");
         $("#display_email_subject").text(record["email_subject"] || "");
+        // Set values for the new keys
+        $("#display_initial_sentence").text(record["initial_sentence"] || "");
+        $("#display_why_them").text(record["why_them"] || "");
 
         $("#prospect_info_container").html(record.prospect_info || "");
         $("#company_background_container").html(record.company_background || "");
